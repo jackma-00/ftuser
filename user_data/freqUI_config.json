@@ -1,0 +1,28 @@
+{
+  "botConfigs": [
+    {
+      "name": "FirstStrategy (Conservative)",
+      "url": "http://127.0.0.1:8080",
+      "username": "freqtrader",
+      "password": "SuperSecretPassword",
+      "active": true
+    },
+    {
+      "name": "SecondStrategy (Trend Following)", 
+      "url": "http://127.0.0.1:8081",
+      "username": "freqtrader",
+      "password": "SuperSecretPassword",
+      "active": true
+    },
+    {
+      "name": "ThirdStrategy (Scalping)",
+      "url": "http://127.0.0.1:8082", 
+      "username": "freqtrader",
+      "password": "SuperSecretPassword",
+      "active": true
+    }
+  ],
+  "defaultBot": "FirstStrategy (Conservative)",
+  "theme": "dark",
+  "timeFormat": "24h"
+} 
