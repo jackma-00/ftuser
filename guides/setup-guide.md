@@ -1,19 +1,19 @@
 # 🚀 Multi-Strategy Freqtrade Setup Guide
 
-## Complete Setup for Three Independent Trading Strategies
+## Environment Setup to Run the Multi-Strategy Trading System
 
-This guide will set up a **professional multi-strategy trading environment** with three independent bots running in separate Docker containers, all monitored from a unified interface.
+This guide will help you **set up your environment** to run the provided **three independent trading strategies**. All strategies, configurations, and Docker setups are already provided - you just need to install the required software to run them.
 
 ---
 
-## 🎯 **What You'll Build**
+## 🎯 **What You'll Run**
 
-### **Multi-Container Architecture**
-- **3 Independent Trading Bots** (FirstStrategy, SecondStrategy, ThirdStrategy)
-- **1 Unified Dashboard** at http://127.0.0.1:8080
-- **Separate Docker Containers** for isolation and reliability
-- **Organized Logging** and database separation
-- **Professional-grade Setup** ready for real trading
+### **Pre-Built Multi-Strategy Architecture**
+- **3 Independent Trading Bots** (FirstStrategy, SecondStrategy, ThirdStrategy) ✅ **Already Created**
+- **1 Unified Dashboard** at http://127.0.0.1:8080 ✅ **Already Configured**
+- **Separate Docker Containers** for isolation and reliability ✅ **Ready to Deploy**
+- **Organized Logging** and database separation ✅ **Already Set Up**
+- **Professional-grade Setup** ready for dry-run testing ✅ **Complete**
 
 ### **Strategy Overview**
 | **Strategy** | **Style** | **Timeframe** | **Risk** | **Expected Activity** |
@@ -24,24 +24,182 @@ This guide will set up a **professional multi-strategy trading environment** wit
 
 ---
 
+## 🤔 **Choose Your Setup Method**
+
+### **🐍 Python Environment (Recommended)**
+- **Direct control** - Full access to Python environment and dependencies
+- **Individual strategy testing** - Run and test one strategy at a time
+- **Development-friendly** - Easy debugging and strategy modification
+- **Transparent execution** - Direct access to logs and error messages
+- **Minimal dependencies** - No containerization overhead
+
+### **🐳 Docker Multi-Strategy (Production-Ready)**
+- **Simultaneous execution** - Run all 3 strategies with one command
+- **Enterprise-grade isolation** - Separate containers for each strategy
+- **Unified monitoring dashboard** - Single interface at one URL
+- **Production deployment** - Industry-standard containerization
+- **Scalable architecture** - Ready for multi-server deployment
+
+**👉 Choose Python Environment for development/testing, Docker for production deployment.**
+
+---
+
 ## 📋 **Prerequisites**
 
-### **Required Software**
+### **For Python Setup:**
 - **macOS** (ARM64 or Intel - tested on macOS 15.5)
-- **Docker Desktop** (recommended) or Docker Engine
+- **Homebrew** package manager
 - **Terminal** access (default Terminal.app or iTerm2)
-- **Web Browser** (Safari, Chrome, Firefox)
+- **Command line** proficiency
 
-### **Hardware Requirements**
+### **For Docker Setup:**
+- **macOS** (ARM64 or Intel - tested on macOS 15.5)
+- **Docker Desktop** installed and running
+- **Terminal** access (default Terminal.app or iTerm2)
+- **Docker knowledge** for troubleshooting
+
+### **Hardware Requirements (Both Methods)**
 - **RAM**: 8GB minimum, 16GB recommended
 - **Storage**: 10GB free space
 - **Network**: Stable internet connection for market data
 
 ---
 
+## 🐍 **Python Environment Setup**
+
+### **Option A: Install Python Environment**
+
+**Set up your Python environment to run the existing multi-strategy setup:**
+
+⚠️ **Note: All strategies, configs, and user_data are already provided. You just need to install the Python environment to run them!**
+
+#### **Step 1: Install Python and Prerequisites**
+
+```bash
+# Install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Python 3.12+ via Homebrew
+brew install python@3.12
+
+# Verify Python installation
+python3 --version
+# Should show: Python 3.12.x
+```
+
+#### **Step 2: Create Virtual Environment**
+
+```bash
+# Navigate to your project directory
+cd /path/to/your/freqtrade-project
+
+# Create virtual environment
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Verify you're in the virtual environment
+which python
+# Should show: /path/to/your/project/.venv/bin/python
+
+# Upgrade pip
+pip install --upgrade pip
+```
+
+#### **Step 3: Install TA-Lib (Technical Analysis Library)**
+
+```bash
+# Install TA-Lib system dependency via Homebrew
+brew install ta-lib
+
+# Verify TA-Lib system installation
+brew list ta-lib
+
+# Install TA-Lib Python package
+pip install TA-Lib --find-links https://github.com/cgohlke/talib-build/releases/latest --prefer-binary --index-url https://pypi.org/simple/
+
+# Test TA-Lib installation
+python -c "import talib; import numpy as np; print('✅ TA-Lib working!'); print('SMA test:', talib.SMA(np.array([1,2,3,4,5], dtype=float), timeperiod=3))"
+```
+
+#### **Step 4: Install Freqtrade**
+
+```bash
+# Install freqtrade (method 1 - simple)
+pip install freqtrade
+
+# OR install freqtrade (method 2 - with dependencies control)
+pip install freqtrade --no-deps --index-url https://pypi.org/simple/
+pip install ccxt SQLAlchemy python-telegram-bot humanize cachetools requests httpx urllib3 jsonschema pandas ft-pandas-ta technical tabulate pycoingecko python-rapidjson orjson jinja2 questionary prompt-toolkit joblib rich pyarrow fastapi pydantic pyjwt websockets uvicorn psutil schedule janus ast-comments aiofiles aiohttp cryptography sdnotify python-dateutil pytz packaging freqtrade-client --index-url https://pypi.org/simple/
+```
+
+#### **Step 5: Verify Installation**
+
+```bash
+# Check freqtrade version
+freqtrade --version
+
+# Test freqtrade import
+python -c "import freqtrade; print('✅ Freqtrade installation complete!')"
+
+# Test basic functionality
+freqtrade list-exchanges
+
+# Verify TA-Lib indicators work
+python -c "import talib; print('✅ TA-Lib ready for strategies!')"
+```
+
+### **🚨 Troubleshooting Python Setup**
+
+**TA-Lib Compilation Errors:**
+```bash
+# If TA-Lib fails to install, try:
+export TA_LIBRARY_PATH=/opt/homebrew/lib
+export TA_INCLUDE_PATH=/opt/homebrew/include
+pip install TA-Lib
+```
+
+**Corporate Network Issues:**
+```bash
+# Use direct PyPI if behind corporate firewall
+pip install --index-url https://pypi.org/simple/ freqtrade
+```
+
+**Virtual Environment Not Working:**
+```bash
+# Always verify you're in venv
+echo $VIRTUAL_ENV
+# Should show your venv path
+
+# Reactivate if needed
+source .venv/bin/activate
+```
+
+### **🎉 Python Environment Ready!**
+
+**Your environment is now set up to run the existing multi-strategy setup!**
+
+**What you can do now:**
+- **Run individual strategies** using the provided configs:
+  ```bash
+  # Run FirstStrategy (Conservative)
+  freqtrade trade --config user_data/strategies/FirstStrategy/config_dryrun.json --strategy FirstStrategy
+  
+  # Run backtests
+  freqtrade backtesting --config user_data/strategies/FirstStrategy/config_backtest.json --strategy FirstStrategy
+  ```
+
+**Next steps (choose one):**
+1. **Deploy Docker multi-strategy** (below) - Run all 3 strategies simultaneously
+2. **Execute single strategy with Python** - Use the commands above  
+3. **Validate with backtesting** - Read the [Backtesting Guide](BACKTESTING_GUIDE.md) first
+
+---
+
 ## ⚡ **Quick Start (15 Minutes)**
 
-### **Option A: Pre-Built Docker Setup (Recommended)**
+### **Option B: Pre-Built Docker Setup (Advanced Users)**
 
 If you have the complete freqtrade-multi-strategy folder:
 
@@ -74,11 +232,17 @@ freqtrade-second   Up X seconds        127.0.0.1:8081->8081/tcp
 freqtrade-third    Up X seconds        127.0.0.1:8082->8082/tcp
 ```
 
+**✅ After Python setup, you can run single strategies directly or continue to Docker setup for multi-strategy deployment.**
+
 ---
 
-## 🔧 **Full Setup from Scratch**
+## 🐳 **Docker Multi-Strategy Setup**
 
-### **Step 1: Install Docker Desktop**
+### **Option C: Full Docker Setup from Scratch**
+
+**For users who want the complete multi-strategy architecture:**
+
+#### **Step 1: Install Docker Desktop**
 
 ```bash
 # Download Docker Desktop for macOS
@@ -93,7 +257,7 @@ docker --version
 docker compose --version
 ```
 
-### **Step 2: Create Project Structure**
+#### **Step 2: Create Project Structure**
 
 ```bash
 # Create main project directory
