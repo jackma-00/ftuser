@@ -334,9 +334,10 @@ Before proceeding to live monitoring:
 
 ## 🎯 **Next Steps**
 
-1. **Start Monitoring** - Use [Monitoring Guide](MONITORING_GUIDE.md) for detailed monitoring
-2. **Analyze Performance** - Compare strategy performance over time
-3. **Optimize Settings** - Adjust individual strategy parameters as needed
+1. **Launch Dry Run** - Follow [Dry Run Operations Guide](docs/DRY_RUN_GUIDE.md) to start and stop dry run trading safely
+2. **Start Monitoring** - Use [Monitoring Guide](MONITORING_GUIDE.md) for detailed monitoring
+3. **Analyze Performance** - Compare strategy performance over time
+4. **Optimize Settings** - Adjust individual strategy parameters as needed
 
 ---
 

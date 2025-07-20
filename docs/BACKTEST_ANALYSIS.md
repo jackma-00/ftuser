@@ -337,7 +337,8 @@ done
 1. **Implement Optimizations** - Apply suggested parameter changes
 2. **Re-run Backtests** - Test optimized strategies across multiple periods
 3. **Deploy to Dry-Run** - Use [Unified UI Guide](UNIFIED_UI_GUIDE.md) for deployment
-4. **Monitor Performance** - Track live results using [Monitoring Guide](MONITORING_GUIDE.md)
+4. **Launch Dry Run** - Follow [Dry Run Operations Guide](docs/DRY_RUN_GUIDE.md) to start and stop dry run trading safely
+5. **Monitor Performance** - Track live results using [Monitoring Guide](MONITORING_GUIDE.md)
 
 ---
 

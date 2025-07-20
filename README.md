@@ -174,7 +174,7 @@ open http://127.0.0.1:8080
 ### **Production Deployment Path**
 1. Review **[Backtesting Guide](docs/BACKTESTING_GUIDE.md)** - Validate strategy performance
 2. Use **[Unified UI Guide](docs/UNIFIED_UI_GUIDE.md)** - Deploy multi-strategy architecture
-3. Follow **[ Dry Run Operations Guide](docs/DRY_RUN_GUIDE.md)** - Start and stop dry run trading safely
+3. Follow **[Dry Run Operations Guide](docs/DRY_RUN_GUIDE.md)** - Start and stop dry run trading safely
 4. Implement **[Monitoring Guide](docs/MONITORING_GUIDE.md)** - Production monitoring
 
 ### **Quick Deployment**
