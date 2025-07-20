@@ -375,7 +375,7 @@ docker compose --version
 
 ### **Start All Strategies**
 ```bash
-# Start all containers in background
+# Create and start all containers in background
 docker compose -f docker-compose-multi.yml up -d
 
 # Verify all containers are running
@@ -446,7 +446,7 @@ tail -f user_data/logs/FirstStrategy/freqtrade.log
 
 ### **Docker Image Updates**
 ```bash
-# Stop all running strategies
+# Remove all running containers (for graceful strategy shutdown, see DRY_RUN_GUIDE.md)
 docker compose -f docker-compose-multi.yml down
 
 # Download the latest Freqtrade image
@@ -455,6 +455,8 @@ docker compose -f docker-compose-multi.yml pull
 # Start with updated images
 docker compose -f docker-compose-multi.yml up -d
 ```
+
+**⚠️ For proper graceful shutdown of active trading strategies, see [Dry Run Operations Guide](DRY_RUN_GUIDE.md) for the complete API-based shutdown procedure.**
 
 ### **Python Environment Updates**
 ```bash
@@ -576,7 +578,7 @@ docker compose -f docker-compose-multi.yml stop
 # View logs
 docker compose -f docker-compose-multi.yml logs -f
 
-# Start specific container
+# Restart specific container
 docker compose -f docker-compose-multi.yml restart freqtrade-first
 
 # Health check

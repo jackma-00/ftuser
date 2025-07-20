@@ -20,26 +20,26 @@ This guide explains how to monitor the **three example strategies provided** fro
 
 ### **Container Architecture Diagram**
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    HOST SYSTEM (macOS)                     │
-├─────────────────────────────────────────────────────────────┤
-│ Container 1 (8080)   │ Container 2 (8081)   │ Container 3 (8082) │
+┌────────────────────────────────────────────────────────────------─┐
+│                    HOST SYSTEM (macOS)                            │
+├─────────────────────────────────────────────────────────────------┤
+│ Container 1 (8080)   │ Container 2 (8081)   │ Container 3 (8082)  │
 │ ┌─────────────────┐  │ ┌─────────────────┐  │ ┌─────────────────┐ │
 │ │ FirstStrategy   │  │ │ SecondStrategy  │  │ │ ThirdStrategy   │ │
 │ │ Conservative    │  │ │ Trend Following │  │ │ Scalping        │ │
 │ │ RSI + SMA       │  │ │ EMA + MACD      │  │ │ BB + Stochastic │ │
 │ │ 5m timeframe    │  │ │ 15m timeframe   │  │ │ 1m timeframe    │ │
-│ │ UI: ✅ Main     │  │ │ UI: ❌ API Only │  │ │ UI: ❌ API Only │ │
-│ │ API: ✅ Active  │  │ │ API: ✅ Active  │  │ │ API: ✅ Active  │ │
+│ │ UI: ✅ Main     │  │ │ UI: ❌ API Only │  │ │ UI: ❌ API Only  │ │
+│ │ API: ✅ Active  │  │ │ API: ✅ Active  │  │ │ API: ✅ Active   │ │
 │ └─────────────────┘  │ └─────────────────┘  │ └─────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────------┘
            │                     │                     │
            └─────────────────────┼─────────────────────┘
                                  │ CORS Enabled
                    ┌─────────────▼─────────────┐
                    │     Unified FreqUI        │
                    │  http://127.0.0.1:8080    │
-                   │  • All strategy monitoring │
+                   │  • All strategy monitoring│
                    │  • Bot switching dropdown │
                    │  • Combined profit view   │
                    └───────────────────────────┘
@@ -211,7 +211,7 @@ tail -f user_data/logs/ThirdStrategy/freqtrade.log
 
 ## 🔄 **Container Management Commands**
 
-### **Start All Strategies**
+### **Start All Containers**
 ```bash
 # Start all containers in background
 docker compose -f docker-compose-multi.yml up -d
@@ -220,25 +220,27 @@ docker compose -f docker-compose-multi.yml up -d
 docker compose -f docker-compose-multi.yml up
 ```
 
-### **Stop All Strategies**
+### **Stop All Containers**
 ```bash
-# Graceful shutdown of all containers
+# Remove all running containers (for graceful strategy shutdown, see DRY_RUN_GUIDE.md)
 docker compose -f docker-compose-multi.yml down
 ```
 
+**⚠️ For proper graceful shutdown of active trading strategies, see [Dry Run Operations Guide](DRY_RUN_GUIDE.md) for the complete API-based shutdown procedure.**
+
 ### **Individual Container Control**
 ```bash
-# Restart specific strategy
+# Restart specific container
 docker compose -f docker-compose-multi.yml restart freqtrade-first
 docker compose -f docker-compose-multi.yml restart freqtrade-second
 docker compose -f docker-compose-multi.yml restart freqtrade-third
 
-# Stop specific strategy
+# Stop specific container
 docker stop freqtrade-first
 docker stop freqtrade-second
 docker stop freqtrade-third
 
-# Start specific strategy
+# Start specific container
 docker start freqtrade-first
 docker start freqtrade-second
 docker start freqtrade-third

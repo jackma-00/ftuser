@@ -336,7 +336,7 @@ docker stats freqtrade-first freqtrade-second freqtrade-third
 docker compose -f docker-compose-multi.yml up -d
 
 # Stop all strategies
-docker compose -f docker-compose-multi.yml down
+docker compose -f docker-compose-multi.yml stop
 
 # Restart all strategies
 docker compose -f docker-compose-multi.yml restart

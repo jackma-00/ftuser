@@ -10,7 +10,7 @@ This guide covers how to operate the **three example strategies provided in dry 
 
 ### **Most Common Operations**
 ```bash
-# Start all strategies
+# Start all containers
 docker compose -f docker-compose-multi.yml up -d
 
 # Stop strategy gracefully (recommended) - keeps container running
@@ -20,7 +20,7 @@ curl -X POST http://127.0.0.1:8080/api/v1/stop -H "Content-Type: application/jso
 curl -X POST http://127.0.0.1:8080/api/v1/start -H "Content-Type: application/json" -u freqtrader:SuperSecretPassword
 
 # Stop containers (when needed)
-docker compose -f docker-compose-multi.yml down
+docker compose -f docker-compose-multi.yml stop
 
 # Check status
 docker compose -f docker-compose-multi.yml ps
@@ -76,7 +76,7 @@ Your system is configured to run **three independent strategies** in dry run mod
 # Navigate to your project directory
 cd /path/to/your/freqtrade-project
 
-# Start all three strategies in dry run mode
+# Start all three containers with respective strategies in dry run mode
 docker compose -f docker-compose-multi.yml up -d
 
 # Verify all containers are running
@@ -90,13 +90,13 @@ docker compose -f docker-compose-multi.yml ps
 
 ### **Start Individual Strategies**
 ```bash
-# Start only FirstStrategy (Conservative)
+# Start only the FirstStrategy container (Conservative)
 docker compose -f docker-compose-multi.yml up -d freqtrade-first
 
-# Start only SecondStrategy (Trend Following)
+# Start only the SecondStrategy container (Trend Following)
 docker compose -f docker-compose-multi.yml up -d freqtrade-second
 
-# Start only ThirdStrategy (Scalping)
+# Start only the ThirdStrategy container (Scalping)
 docker compose -f docker-compose-multi.yml up -d freqtrade-third
 
 # Start specific combination (e.g., only conservative strategies)
@@ -264,7 +264,7 @@ done
 sleep 30
 
 # Then stop containers
-docker compose -f docker-compose-multi.yml down
+docker compose -f docker-compose-multi.yml stop
 
 # Verify all containers are stopped
 docker compose -f docker-compose-multi.yml ps
@@ -273,7 +273,7 @@ docker compose -f docker-compose-multi.yml ps
 ### **Stop All Containers**
 ```bash
 # Immediate container shutdown (strategies stop automatically)
-docker compose -f docker-compose-multi.yml down
+docker compose -f docker-compose-multi.yml stop
 
 # Verify all containers are stopped
 docker compose -f docker-compose-multi.yml ps
@@ -317,7 +317,7 @@ docker container prune -f
 # Restart all with configuration reload
 docker compose -f docker-compose-multi.yml restart
 
-# Or stop and start fresh
+# Or remove and start fresh
 docker compose -f docker-compose-multi.yml down
 docker compose -f docker-compose-multi.yml up -d
 ```
