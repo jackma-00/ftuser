@@ -65,6 +65,15 @@ Deploy your strategies in dry-run mode:
 - Troubleshoot common issues
 - Control running strategies
 
+### **🔧 PHASE 4: System Operations**
+Extend and manage your multi-strategy system:
+
+📖 **[7. Strategy Addition Guide](docs/STRATEGY_ADDITION_GUIDE.md)**
+- Add new strategies to existing system
+- Maintain proper directory structure
+- Configure docker-compose for new strategies
+- Integrate with unified monitoring interface
+
 ---
 
 ## 🧠 **Understanding Multi-Strategy Architecture**
