@@ -454,9 +454,6 @@ docker compose -f docker-compose-multi.yml pull
 
 # Start with updated images
 docker compose -f docker-compose-multi.yml up -d
-
-# Verify new version
-docker logs freqtrade-first | head -5
 ```
 
 ### **Python Environment Updates**
@@ -570,16 +567,16 @@ docker logs freqtrade-first | grep -i "exchange\|binance"
 
 ### **Quick Reference Commands**
 ```bash
-# Start all strategies
+# Start all containers
 docker compose -f docker-compose-multi.yml up -d
 
-# Stop all strategies  
-docker compose -f docker-compose-multi.yml down
+# Stop all containers
+docker compose -f docker-compose-multi.yml stop
 
 # View logs
 docker compose -f docker-compose-multi.yml logs -f
 
-# Restart specific strategy
+# Start specific container
 docker compose -f docker-compose-multi.yml restart freqtrade-first
 
 # Health check
