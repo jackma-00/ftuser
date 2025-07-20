@@ -2,7 +2,7 @@
 
 ## Comprehensive Monitoring for Independent Trading Strategies
 
-This guide covers monitoring **three independent trading strategies** running in separate Docker containers. Each strategy operates autonomously while providing centralized monitoring through a unified interface.
+This guide covers monitoring the **three example strategies provided** running in separate Docker containers. Each strategy operates autonomously while providing centralized monitoring through a unified interface.
 
 ---
 
@@ -205,7 +205,7 @@ tail -50 user_data/logs/SecondStrategy/freqtrade.log | grep -E "(MACD|EMA|trend)
 docker logs freqtrade-second | grep -i "signal\|entry" | tail -10
 
 # Check API status
-curl -s http://127.0.0.1:8081/api/v1/status | jq '.'
+curl -s http://127.0.0.1:8081/api/v1/count -u freqtrader:SuperSecretPassword | jq '.'
 ```
 
 ### **ThirdStrategy (Bollinger Bands Scalping)**
@@ -259,7 +259,9 @@ grep -i error user_data/logs/*/freqtrade.log | tail -5 || echo "No recent errors
 # Trading activity (last hour)
 echo -e "\nTrading Activity (last 1 hour):"
 for strategy in FirstStrategy SecondStrategy ThirdStrategy; do
-  count=$(grep "$(date -d '1 hour ago' '+%Y-%m-%d %H')" user_data/logs/$strategy/freqtrade.log 2>/dev/null | wc -l)
+  # macOS compatible date command (1 hour ago)
+  hour_ago=$(date -v-1H '+%Y-%m-%d %H' 2>/dev/null || date -d '1 hour ago' '+%Y-%m-%d %H' 2>/dev/null || echo "$(date '+%Y-%m-%d %H')")
+  count=$(grep "$hour_ago" user_data/logs/$strategy/freqtrade.log 2>/dev/null | wc -l)
   echo "$strategy: $count log entries in last hour"
 done
 
@@ -279,7 +281,12 @@ cat > check_strategy_alerts.sh << 'EOF'
 for strategy in FirstStrategy SecondStrategy ThirdStrategy; do
   last_heartbeat=$(grep "heartbeat" user_data/logs/$strategy/freqtrade.log | tail -1 | cut -d' ' -f1-2)
   if [ -n "$last_heartbeat" ]; then
-    last_time=$(date -d "$last_heartbeat" +%s)
+    # Cross-platform date parsing (macOS and Linux compatible)
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      last_time=$(date -j -f "%Y-%m-%d %H:%M:%S" "$last_heartbeat" +%s 2>/dev/null || echo "0")
+    else
+      last_time=$(date -d "$last_heartbeat" +%s 2>/dev/null || echo "0")
+    fi
     current_time=$(date +%s)
     diff=$((current_time - last_time))
     if [ $diff -gt 600 ]; then  # 10 minutes

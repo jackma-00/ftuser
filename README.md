@@ -1,24 +1,21 @@
+![FTUser Logo](docs/pics/ftuser_logo.png)
+
 # 🚀 Complete Freqtrade Multi-Strategy Guide
 
 ## Professional Multi-Strategy Trading Bot System
 
-This comprehensive guide will walk you through setting up, backtesting, and running **three independent trading strategies** with a **unified monitoring interface**. Designed for traders who want to deploy professional algorithmic trading with Freqtrade.
+This comprehensive guide will walk you through setting up, backtesting, and running **multiple independent trading strategies** with a **unified monitoring interface**. Designed for traders who want to deploy professional algorithmic trading with [Freqtrade](https://www.freqtrade.io/en/latest/).
 
 ---
 
 ## 🎯 **What You'll Build**
 
 ### **Multi-Strategy Architecture**
-- **3 Independent Trading Bots** running simultaneously
+- **Multiple Independent Trading Bots** running simultaneously
 - **1 Unified Interface** to monitor all strategies at once
 - **Separate Docker Containers** for each strategy (isolation & reliability)
 - **Organized Backtesting** with strategy-specific results
 - **Professional-grade Setup** suitable for real trading
-
-### **The Three Strategies**
-1. **FirstStrategy** - Conservative RSI + SMA (5-minute timeframe)
-2. **SecondStrategy** - EMA + MACD Trend Following (15-minute timeframe)  
-3. **ThirdStrategy** - Bollinger Bands Scalping (1-minute timeframe)
 
 ---
 
@@ -27,22 +24,21 @@ This comprehensive guide will walk you through setting up, backtesting, and runn
 ### **🏗️ PHASE 1: Initial Setup**
 Start here if you're completely new to Freqtrade:
 
-📖 **[1. Setup Guide](guides/setup-guide.md)**
+📖 **[1. Setup Guide](docs/setup-guide.md)**
 - **Python Environment**: Install Python, TA-Lib, and Freqtrade dependencies
 - **Docker Deployment**: Enterprise-grade multi-container deployment
 - **Professional installation instructions** with troubleshooting
-- **Choose deployment method** based on requirements
 
 ### **🧪 PHASE 2: Strategy Testing**
 Validate strategies through comprehensive backtesting before live deployment:
 
-📖 **[2. Backtesting Guide](guides/BACKTESTING_GUIDE.md)**
+📖 **[2. Backtesting Guide](docs/BACKTESTING_GUIDE.md)**
 - Understand StaticPairList vs VolumePairList
 - Run organized backtests for each strategy
 - Analyze historical performance
 - Export trading signals for analysis
 
-📖 **[3. Backtest Analysis](guides/BACKTEST_ANALYSIS.md)**
+📖 **[3. Backtest Analysis](docs/BACKTEST_ANALYSIS.md)**
 - Interpret backtest results
 - Identify profitable strategies
 - Understand performance metrics
@@ -51,13 +47,19 @@ Validate strategies through comprehensive backtesting before live deployment:
 ### **🎮 PHASE 3: Live Trading Setup**
 Deploy your strategies in dry-run mode:
 
-📖 **[4. Unified UI Guide](guides/UNIFIED_UI_GUIDE.md)**
+📖 **[4. Unified UI Guide](docs/UNIFIED_UI_GUIDE.md)**
 - Configure multi-strategy monitoring
 - Set up CORS for unified interface
 - Access all strategies from one dashboard
 - Manage multiple Docker containers
 
-📖 **[5. Monitoring Guide](guides/MONITORING_GUIDE.md)**
+📖 **[5. Dry Run Operations Guide](docs/DRY_RUN_GUIDE.md)**
+- Start and stop dry run trading safely
+- Operate multiple strategies simultaneously
+- Verify simulation mode is active
+- Test strategies with virtual money
+
+📖 **[6. Monitoring Guide](docs/MONITORING_GUIDE.md)**
 - Monitor live trading activity
 - Check logs and performance
 - Troubleshoot common issues
@@ -75,30 +77,39 @@ Deploy your strategies in dry-run mode:
 
 ### **Independent Container Architecture**
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    HOST SYSTEM (macOS)                     │
-├─────────────────────────────────────────────────────────────┤
-│  Docker Container 1    │  Docker Container 2  │  Container 3 │
-│  ┌─────────────────┐   │  ┌─────────────────┐  │ ┌──────────┐ │
-│  │ FirstStrategy   │   │  │ SecondStrategy  │  │ │ Third    │ │
-│  │ (Conservative)  │   │  │ (Trend Follow)  │  │ │ Strategy │ │
-│  │ Port: 8080      │   │  │ Port: 8081      │  │ │ Port:8082│ │
-│  │ UI: ✅ Main     │   │  │ UI: ❌ API Only │  │ │ BB+Stoch │ │
-│  │ RSI + SMA       │   │  │ EMA + MACD      │  │ │ 1m frame │ │
-│  │ 5m timeframe    │   │  │ 15m timeframe   │  │ │          │ │
-│  └─────────────────┘   │  └─────────────────┘  │ └──────────┘ │
-└─────────────────────────────────────────────────────────────┘
-         │                        │                      │
-         └────────────────────────┼──────────────────────┘
-                                  │
-                    ┌─────────────▼─────────────┐
-                    │    Unified FreqUI         │
-                    │  http://127.0.0.1:8080    │
-                    │  • Monitor all strategies │
-                    │  • Switch between bots    │
-                    │  • Combined dashboard     │
-                    └───────────────────────────┘
+Multi-Strategy Container Deployment
+┌────────────────────────────────────────────────────────────────────────────-┐
+│                               HOST SYSTEM                                   │
+├────────────────────────────────────────────────────────────────────────────-┤
+│  Strategy Container A  │  Strategy Container B  │  Strategy Container C     │
+│  ┌────────────────────┐│  ┌────────────────────┐│  ┌──────────────────────┐ │
+│  │   Strategy Alpha   ││  │   Strategy Beta    ││  │   Strategy Gamma     │ │
+│  │                    ││  │                    ││  │                      │ │
+│  │   Port: 8080       ││  │   Port: 8081       ││  │   Port: 8082         │ │
+│  │   UI: ✅ Main      ││  │   UI: ❌ API Only  │ │  │   UI: ❌ API Only    │ │
+│  │   Isolated Data    ││  │   Isolated Data    ││  │   Isolated Data      │ │
+│  │   Independent      ││  │   Independent      ││  │   Independent        │ │
+│  └────────────────────┘│  └────────────────────┘│  └──────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────────-┘
+         │                         │                        │
+         └─────────────────────────┼────────────────────────┘
+                                   │
+                     ┌─────────────▼─────────────┐
+                     │    Unified FreqUI         │
+                     │  http://127.0.0.1:8080    │
+                     │  • Monitor all strategies │
+                     │  • Switch between bots    │
+                     │  • Centralized control    │
+                     │  • Combined analytics     │
+                     └───────────────────────────┘
 ```
+
+**Key Architecture Benefits:**
+- **Isolation**: Each strategy runs independently with its own database and logs
+- **Scalability**: Add or remove strategies without affecting others
+- **Reliability**: If one strategy fails, others continue running
+- **Flexibility**: Each container can have different configurations and resources
+- **Unified Management**: Single interface to monitor and control all strategies
 
 ### **Key Technical Concepts**
 
@@ -122,14 +133,14 @@ Deploy your strategies in dry-run mode:
 ## ⚡ **Quick Start (15 Minutes)**
 
 ### **Prerequisites**
-- macOS computer (ARM64 or Intel)
+- macOS computer (ARM64)
 - Docker installed
 - Basic terminal knowledge
 
 ### **Rapid Deployment**
 ```bash
-# 1. Clone or download this setup
-cd freqtrade-multi-strategy
+# 1. Navigate to project directory
+cd ftuser
 
 # 2. Start all strategies
 docker compose -f docker-compose-multi.yml up -d
@@ -154,16 +165,17 @@ open http://127.0.0.1:8080
 ## 🎯 **Implementation Paths**
 
 ### **Development & Testing Path**
-1. Read **[Setup Guide](guides/setup-guide.md)** - Install environment
-2. Follow **[Backtesting Guide](guides/BACKTESTING_GUIDE.md)** - Validate strategies
-3. Review **[Backtest Analysis](guides/BACKTEST_ANALYSIS.md)** - Optimize performance
-4. Deploy using **[Unified UI Guide](guides/UNIFIED_UI_GUIDE.md)** - Go live (dry-run)
-5. Monitor with **[Monitoring Guide](guides/MONITORING_GUIDE.md)** - Track execution
+1. Read **[Setup Guide](docs/setup-guide.md)** - Install environment
+2. Follow **[Backtesting Guide](docs/BACKTESTING_GUIDE.md)** - Validate strategies
+3. Review **[Backtest Analysis](docs/BACKTEST_ANALYSIS.md)** - Optimize performance
+4. Deploy using **[Unified UI Guide](docs/UNIFIED_UI_GUIDE.md)** - Go live (dry-run)
+5. Monitor with **[Monitoring Guide](docs/MONITORING_GUIDE.md)** - Track execution
 
 ### **Production Deployment Path**
-1. Review **[Backtesting Guide](guides/BACKTESTING_GUIDE.md)** - Validate strategy performance
-2. Use **[Unified UI Guide](guides/UNIFIED_UI_GUIDE.md)** - Deploy multi-strategy architecture
-3. Implement **[Monitoring Guide](guides/MONITORING_GUIDE.md)** - Production monitoring
+1. Review **[Backtesting Guide](docs/BACKTESTING_GUIDE.md)** - Validate strategy performance
+2. Use **[Unified UI Guide](docs/UNIFIED_UI_GUIDE.md)** - Deploy multi-strategy architecture
+3. Follow **[ Dry Run Operations Guide](docs/DRY_RUN_GUIDE.md)** - Start and stop dry run trading safely
+4. Implement **[Monitoring Guide](docs/MONITORING_GUIDE.md)** - Production monitoring
 
 ### **Quick Deployment**
 1. Use **docker-compose-multi.yml** directly
@@ -193,21 +205,6 @@ open http://127.0.0.1:8080
 
 ---
 
-## 📊 **Strategy Performance Overview**
-
-| **Strategy** | **Style** | **Timeframe** | **Risk Level** | **Market Type** |
-|-------------|-----------|---------------|----------------|-----------------|
-| **First** | Conservative | 5 minutes | 🟢 Low | Trending markets |
-| **Second** | Trend Following | 15 minutes | 🟡 Medium | Strong trends |
-| **Third** | Scalping | 1 minute | 🔴 High | Volatile markets |
-
-### **Expected Behavior**
-- **FirstStrategy** - Few trades, higher accuracy, longer holds
-- **SecondStrategy** - Moderate trades, trend-following, medium holds
-- **ThirdStrategy** - Many trades, quick profits, very short holds
-
----
-
 ## 🔧 **Troubleshooting Quick Links**
 
 ### **Common Issues**
@@ -220,25 +217,6 @@ open http://127.0.0.1:8080
 - Check individual guide troubleshooting sections
 - Review Docker container logs: `docker logs freqtrade-first`
 - Verify API endpoints: `curl http://127.0.0.1:8080/api/v1/ping`
-
----
-
-## 🎯 **Next Steps After Setup**
-
-### **Week 1: Validation Phase**
-- Monitor dry-run performance daily
-- Analyze strategy behaviors in different market conditions
-- Review Freqtrade documentation for advanced configuration
-
-### **Week 2-4: Optimization Phase**
-- Analyze backtest results from different time periods
-- Adjust strategy parameters based on performance
-- Test additional strategies or modifications
-
-### **Month 2+: Advanced Phase**
-- Consider live trading with minimal amounts
-- Implement additional risk management
-- Explore advanced Freqtrade features
 
 ---
 
@@ -267,4 +245,4 @@ This setup is for **educational and research purposes**. Cryptocurrency trading 
 
 ---
 
-**Ready to start? Begin with the [Setup Guide](guides/setup-guide.md)! 🚀** 
+**Ready to start? Begin with the [Setup Guide](docs/setup-guide.md)! 🚀** 

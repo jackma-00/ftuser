@@ -2,7 +2,7 @@
 
 ## Understanding Backtesting in Multi-Strategy Setup
 
-This guide shows how to run organized backtests for your **three independent strategies** before deploying them in live trading. **Backtesting uses StaticPairList** for consistent historical testing, while live trading uses **VolumePairList** for dynamic pair selection.
+This guide shows how to run organized backtests for **multiple independent strategies** before deploying them in live trading. While these concepts apply to any multi-strategy setup, this guide will specifically focus on the **three example strategies provided** (FirstStrategy, SecondStrategy, and ThirdStrategy). **Backtesting uses StaticPairList** for consistent historical testing, while live trading uses **VolumePairList** for dynamic pair selection.
 
 ---
 
@@ -48,6 +48,100 @@ This guide shows how to run organized backtests for your **three independent str
 
 ---
 
+## 📥 **Download Market Data for Your Strategies**
+
+Before running backtests, you need to download historical market data for each strategy's specific pairs and timeframes.
+
+### **Data Requirements by Strategy**
+
+| **Strategy** | **Timeframe** | **Pairs** | **Data Period** |
+|-------------|---------------|-----------|-----------------|
+| **FirstStrategy** | 5 minutes | BTC/USDT, ETH/USDT, ADA/USDT | 3-6 months |
+| **SecondStrategy** | 15 minutes | SOL/USDT, DOT/USDT, LINK/USDT | 3-6 months |
+| **ThirdStrategy** | 1 minute | DOGE/USDT, SHIB/USDT, XRP/USDT, TRX/USDT, LTC/USDT | 1-2 months |
+
+### **Download Commands for Each Strategy**
+
+#### **FirstStrategy Data (Conservative RSI + SMA)**
+```bash
+# Download 6 months of 5-minute data for conservative strategy
+docker compose run --rm freqtrade download-data \
+  --config user_data/strategies/FirstStrategy/config_backtest.json \
+  --pairs BTC/USDT ETH/USDT ADA/USDT \
+  --timeframe 5m \
+  --timerange 20240301-20240901 \
+  --exchange binance
+```
+
+#### **SecondStrategy Data (EMA + MACD Trend)**
+```bash
+# Download 6 months of 15-minute data for trend following
+docker compose run --rm freqtrade download-data \
+  --config user_data/strategies/SecondStrategy/config_backtest.json \
+  --pairs SOL/USDT DOT/USDT LINK/USDT \
+  --timeframe 15m \
+  --timerange 20240301-20240901 \
+  --exchange binance
+```
+
+#### **ThirdStrategy Data (Bollinger Bands Scalping)**
+```bash
+# Download 2 months of 1-minute data for scalping (large dataset)
+docker compose run --rm freqtrade download-data \
+  --config user_data/strategies/ThirdStrategy/config_backtest.json \
+  --pairs DOGE/USDT SHIB/USDT XRP/USDT TRX/USDT LTC/USDT \
+  --timeframe 1m \
+  --timerange 20240701-20240901 \
+  --exchange binance
+```
+
+### **Download All Strategy Data at Once**
+```bash
+# Download data for all strategies in one command
+docker compose run --rm freqtrade download-data \
+  --pairs BTC/USDT ETH/USDT ADA/USDT SOL/USDT DOT/USDT LINK/USDT DOGE/USDT SHIB/USDT XRP/USDT TRX/USDT LTC/USDT \
+  --timeframes 1m 5m 15m \
+  --timerange 20240301-20240901 \
+  --exchange binance
+```
+
+### **Data Storage Location**
+```
+user_data/data/binance/
+├── ADA_USDT-5m.json       # FirstStrategy data
+├── BTC_USDT-5m.json
+├── ETH_USDT-5m.json
+├── SOL_USDT-15m.json      # SecondStrategy data  
+├── DOT_USDT-15m.json
+├── LINK_USDT-15m.json
+├── DOGE_USDT-1m.json      # ThirdStrategy data
+├── SHIB_USDT-1m.json
+├── XRP_USDT-1m.json
+├── TRX_USDT-1m.json
+└── LTC_USDT-1m.json
+```
+
+### **Verify Downloaded Data**
+```bash
+# Check available data for your strategies
+docker compose run --rm freqtrade list-data \
+  --config user_data/strategies/FirstStrategy/config_backtest.json
+
+# Show data summary
+docker compose run --rm freqtrade show-trades \
+  --config user_data/strategies/FirstStrategy/config_backtest.json \
+  --print-json | head -20
+```
+
+### **Data Download Best Practices**
+- **Start Small**: Download 1-2 months initially to test
+- **Expand Gradually**: Add more historical data as needed
+- **Storage Space**: 1-minute data requires significantly more storage
+- **Network**: Large downloads may take 10-30 minutes
+- **Exchange Limits**: Binance allows reasonable download rates
+
+---
+
 ## 🎯 **Multi-Strategy Directory Structure**
 
 ```
@@ -85,26 +179,7 @@ user_data/
 ./backtest_all_strategies.sh
 ```
 
-### **Option 2: Docker Compose (Recommended)**
-```bash
-# Test all strategies in parallel
-docker compose run --rm freqtrade backtesting \
-  --strategy-list FirstStrategy SecondStrategy ThirdStrategy \
-  --recursive-strategy-search \
-  --strategy-path user_data/strategies \
-  --timerange 20240801-20240831 \
-  --export trades,signals
-```
-
-**Benefits:**
-- ✅ Tests all 3 strategies with optimal timeframes
-- ✅ Saves results to separate directories  
-- ✅ Exports trades and signals for analysis
-- ✅ Uses timestamped filenames to avoid conflicts
-
----
-
-## 📋 **Individual Strategy Backtesting**
+### **Option 2: Individual Strategy Backtesting**
 
 ### **FirstStrategy (Conservative RSI + SMA)**
 **Timeframe:** 5 minutes | **Pairs:** BTC/USDT, ETH/USDT, ADA/USDT

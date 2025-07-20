@@ -149,9 +149,8 @@ Thumbs.db
 *.bak
 *.tmp
 
-# Freqtrade Multi-Strategy Setup
-# Documentation folder (if generated)
-docs/
+# Freqtrade Documentation folder (if generated)
+ref-docs/
 
 # Market data files from Binance
 user_data/data/

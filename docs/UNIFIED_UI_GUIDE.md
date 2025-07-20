@@ -2,7 +2,7 @@
 
 ## Single Interface for Multiple Independent Strategies
 
-This guide explains how to monitor **three independent trading strategies** from a **single unified interface**. Each strategy runs in its own Docker container with separate processes, but you can view and control all of them from one dashboard.
+This guide explains how to monitor the **three example strategies provided** from a **single unified interface**. Each strategy runs in its own Docker container with separate processes, but you can view and control all of them from one dashboard.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Understanding Your Strategy Performance Results
 
-This guide helps you analyze and interpret backtest results from your **three independent trading strategies**. Each strategy has different characteristics, so analysis approaches vary by strategy type and risk profile.
+This guide helps you analyze and interpret backtest results from the **three independent trading strategies** examples. Each strategy has different characteristics, so analysis approaches vary by strategy type and risk profile.
 
 ---
 

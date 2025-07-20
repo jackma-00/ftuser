@@ -1,5 +1,4 @@
 ---
-version: '3'
 services:
   # Strategy 1 - FirstStrategy (Conservative RSI + SMA) - MAIN UI
   freqtrade-first:
