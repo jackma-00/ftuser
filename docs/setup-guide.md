@@ -94,8 +94,15 @@ brew install ta-lib
 # Verify TA-Lib system installation
 brew list ta-lib
 
-# Install TA-Lib Python package
-pip install TA-Lib --find-links https://github.com/cgohlke/talib-build/releases/latest --prefer-binary --index-url https://pypi.org/simple/
+# Set environment variables for TA-Lib paths (CRITICAL for macOS ARM64)
+export TA_LIBRARY_PATH=/opt/homebrew/lib
+export TA_INCLUDE_PATH=/opt/homebrew/include
+
+# Method 1: Try pre-compiled wheel first (RECOMMENDED)
+pip install --find-links https://github.com/cgohlke/talib-build/releases/latest TA-Lib --prefer-binary --no-build-isolation
+
+# If Method 1 fails, try Method 2: Force specific wheel
+pip install https://github.com/cgohlke/talib-build/releases/download/v2024.10.10/TA_Lib-0.4.32-cp313-cp313-macosx_11_0_arm64.whl
 
 # Test TA-Lib installation
 python -c "import talib; import numpy as np; print('✅ TA-Lib working!'); print('SMA test:', talib.SMA(np.array([1,2,3,4,5], dtype=float), timeperiod=3))"
@@ -130,28 +137,213 @@ python -c "import talib; print('✅ TA-Lib ready for strategies!')"
 
 ### **🚨 Troubleshooting Python Setup**
 
-**TA-Lib Compilation Errors:**
+#### **⚡ Quick Fix for TA-Lib Issues**
+
+**If you're getting the "ld: library not found for -lta_lib" error, try this first:**
+
 ```bash
-# If TA-Lib fails to install, try:
+# Step 1: Set environment variables
 export TA_LIBRARY_PATH=/opt/homebrew/lib
 export TA_INCLUDE_PATH=/opt/homebrew/include
-pip install TA-Lib
+
+# Step 2: Remove and reinstall system ta-lib
+brew uninstall ta-lib && brew install ta-lib
+
+# Step 3: Use pre-compiled wheel (most reliable)
+pip uninstall TA-Lib -y
+pip install https://github.com/cgohlke/talib-build/releases/download/v2024.10.10/TA_Lib-0.4.32-cp313-cp313-macosx_11_0_arm64.whl
+
+# Step 4: Test
+python -c "import talib; print('✅ TA-Lib working!')"
 ```
 
-**Corporate Network Issues:**
+**If that doesn't work, see detailed solutions below.**
+
+---
+
+#### **TA-Lib Installation Issues (Most Common)**
+
+**Problem: "ld: library not found for -lta_lib" or "Cannot find ta-lib library"**
+
+This is the most common issue on macOS ARM64 with Python 3.13. Here are multiple solutions:
+
+```bash
+# SOLUTION 1: Complete Clean Reinstall (RECOMMENDED)
+# Remove any partial installation
+pip uninstall TA-Lib -y
+
+# Ensure Homebrew ta-lib is properly installed
+brew uninstall ta-lib
+brew install ta-lib
+
+# Set environment variables (add to ~/.zshrc for persistence)
+export TA_LIBRARY_PATH=/opt/homebrew/lib
+export TA_INCLUDE_PATH=/opt/homebrew/include
+export LDFLAGS="-L/opt/homebrew/lib"
+export CPPFLAGS="-I/opt/homebrew/include"
+
+# Try pre-compiled wheel first
+pip install --find-links https://github.com/cgohlke/talib-build/releases/latest TA-Lib --prefer-binary --no-build-isolation
+```
+
+```bash
+# SOLUTION 2: Force Python 3.13 ARM64 Wheel
+pip install https://github.com/cgohlke/talib-build/releases/download/v2024.10.10/TA_Lib-0.4.32-cp313-cp313-macosx_11_0_arm64.whl
+```
+
+```bash
+# SOLUTION 3: Build from Source with Explicit Paths
+export TA_LIBRARY_PATH=/opt/homebrew/lib
+export TA_INCLUDE_PATH=/opt/homebrew/include
+pip install TA-Lib --no-binary=TA-Lib --force-reinstall
+```
+
+```bash
+# SOLUTION 4: Alternative Package (if all else fails)
+pip install talib-binary
+# Note: This is a different package but compatible with freqtrade
+```
+
+**Verify TA-Lib Installation:**
+```bash
+# Test in Python
+python -c "
+import talib
+import numpy as np
+print('✅ TA-Lib version:', talib.__version__)
+data = np.array([1,2,3,4,5,6,7,8,9,10], dtype=float)
+sma = talib.SMA(data, timeperiod=3)
+print('✅ SMA test passed:', sma)
+print('✅ TA-Lib fully working!')
+"
+```
+
+#### **Python Version Compatibility Issues**
+
+**Problem: Python 3.13 compatibility issues**
+
+```bash
+# Check your Python version
+python --version
+
+# If using Python 3.13 and having issues, consider Python 3.12
+brew install python@3.12
+
+# Create new virtual environment with Python 3.12
+python3.12 -m venv .venv312
+source .venv312/bin/activate
+
+# Install freqtrade with Python 3.12
+pip install --upgrade pip
+# Continue with TA-Lib installation from above
+```
+
+#### **Homebrew Path Issues**
+
+**Problem: Homebrew not in correct location**
+
+```bash
+# Check Homebrew installation path
+brew --prefix
+# Should show /opt/homebrew on ARM64 Mac
+
+# If different, adjust paths accordingly
+export TA_LIBRARY_PATH=$(brew --prefix)/lib
+export TA_INCLUDE_PATH=$(brew --prefix)/include
+
+# Verify ta-lib is installed
+ls -la $(brew --prefix)/lib/libta_lib*
+ls -la $(brew --prefix)/include/ta_lib/
+```
+
+#### **Corporate Network Issues**
+
 ```bash
 # Use direct PyPI if behind corporate firewall
 pip install --index-url https://pypi.org/simple/ freqtrade
+
+# For TA-Lib behind firewall
+pip install --index-url https://pypi.org/simple/ --find-links https://github.com/cgohlke/talib-build/releases/latest TA-Lib --prefer-binary
 ```
 
-**Virtual Environment Not Working:**
+#### **Virtual Environment Issues**
+
 ```bash
 # Always verify you're in venv
 echo $VIRTUAL_ENV
 # Should show your venv path
 
+# Check Python path is correct
+which python
+# Should show path inside your venv
+
 # Reactivate if needed
 source .venv/bin/activate
+
+# Recreate venv if corrupted
+deactivate
+rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+```
+
+#### **Xcode Command Line Tools Issues**
+
+```bash
+# Ensure Xcode tools are installed (required for compilation)
+xcode-select --install
+
+# If already installed, reset
+sudo xcode-select --reset
+
+# Verify installation
+xcode-select -p
+# Should show: /Applications/Xcode.app/Contents/Developer or /Library/Developer/CommandLineTools
+```
+
+#### **Permission Issues**
+
+```bash
+# If you get permission errors
+# DON'T use sudo pip! Instead fix permissions:
+
+# Check pip cache permissions
+ls -la ~/Library/Caches/pip/
+
+# Clear pip cache if needed
+pip cache purge
+
+# Reinstall pip in venv
+python -m pip install --upgrade pip --force-reinstall
+```
+
+#### **Final Verification Steps**
+
+```bash
+# Complete system check
+echo "=== Environment Check ==="
+echo "Python: $(python --version)"
+echo "Pip: $(pip --version)"
+echo "Virtual env: $VIRTUAL_ENV"
+echo "Homebrew prefix: $(brew --prefix)"
+echo "TA-Lib system lib exists: $(ls $(brew --prefix)/lib/libta_lib* 2>/dev/null && echo 'YES' || echo 'NO')"
+
+echo "=== Testing TA-Lib ==="
+python -c "
+try:
+    import talib
+    print('✅ TA-Lib import: SUCCESS')
+    print('✅ TA-Lib version:', talib.__version__)
+except ImportError as e:
+    print('❌ TA-Lib import: FAILED -', e)
+
+try:
+    import freqtrade
+    print('✅ Freqtrade import: SUCCESS')
+except ImportError as e:
+    print('❌ Freqtrade import: FAILED -', e)
+"
 ```
 
 ### **🎉 Python Environment Ready!**
