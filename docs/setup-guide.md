@@ -15,12 +15,25 @@ This guide will help you **set up your environment** to run the provided **three
 - **Organized Logging** and database separation ✅ **Already Set Up**
 - **Professional-grade Setup** ready for dry-run testing ✅ **Complete**
 
-### **Example Strategy Overview**
-| **Strategy** | **Style** | **Timeframe** | **Risk** | **Expected Activity** |
-|-------------|-----------|---------------|----------|---------------------|
-| **FirstStrategy** | Conservative RSI + SMA | 5 minutes | 🟢 Low | 1-3 trades/day |
-| **SecondStrategy** | EMA + MACD Trend | 15 minutes | 🟡 Medium | 3-6 trades/day |
-| **ThirdStrategy** | Bollinger Bands Scalp | 1 minute | 🔴 High | 10-30 trades/day |
+---
+
+## 📥 **Get the Project**
+
+**First, clone the repository and navigate to the project directory:**
+
+```bash
+# Clone the ftuser repository
+git clone https://github.com/jackma-00/ftuser.git
+
+# Navigate to the project directory  
+cd ftuser
+
+# Verify you're in the correct directory
+ls -la
+# You should see: docs/, user_data/, docker-compose-multi.yml, README.md, etc.
+```
+
+**All subsequent commands in this guide assume you're in the `ftuser` directory.**
 
 ---
 
@@ -68,8 +81,9 @@ python3 --version
 #### **Step 2: Create Virtual Environment**
 
 ```bash
-# Navigate to your project directory
-cd /path/to/your/freqtrade-project
+# Ensure you're in the ftuser directory (from the "Get the Project" step above)
+pwd
+# Should show: /path/to/ftuser
 
 # Create virtual environment
 python3 -m venv .venv
@@ -94,7 +108,7 @@ brew install ta-lib
 # Verify TA-Lib system installation
 brew list ta-lib
 
-# Set environment variables for TA-Lib paths (CRITICAL for macOS ARM64)
+# Set environment variables for TA-Lib paths
 export TA_LIBRARY_PATH=/opt/homebrew/lib
 export TA_INCLUDE_PATH=/opt/homebrew/include
 
@@ -165,10 +179,10 @@ python -c "import talib; print('✅ TA-Lib working!')"
 
 **Problem: "ld: library not found for -lta_lib" or "Cannot find ta-lib library"**
 
-This is the most common issue on macOS ARM64 with Python 3.13. Here are multiple solutions:
+This is the most common issue on macOS ARM64. Here is the solutions:
 
 ```bash
-# SOLUTION 1: Complete Clean Reinstall (RECOMMENDED)
+# SOLUTION: Complete Clean Reinstall (RECOMMENDED)
 # Remove any partial installation
 pip uninstall TA-Lib -y
 
@@ -184,24 +198,6 @@ export CPPFLAGS="-I/opt/homebrew/include"
 
 # Try pre-compiled wheel first
 pip install --find-links https://github.com/cgohlke/talib-build/releases/latest TA-Lib --prefer-binary --no-build-isolation
-```
-
-```bash
-# SOLUTION 2: Force Python 3.13 ARM64 Wheel
-pip install https://github.com/cgohlke/talib-build/releases/download/v2024.10.10/TA_Lib-0.4.32-cp313-cp313-macosx_11_0_arm64.whl
-```
-
-```bash
-# SOLUTION 3: Build from Source with Explicit Paths
-export TA_LIBRARY_PATH=/opt/homebrew/lib
-export TA_INCLUDE_PATH=/opt/homebrew/include
-pip install TA-Lib --no-binary=TA-Lib --force-reinstall
-```
-
-```bash
-# SOLUTION 4: Alternative Package (if all else fails)
-pip install talib-binary
-# Note: This is a different package but compatible with freqtrade
 ```
 
 **Verify TA-Lib Installation:**
