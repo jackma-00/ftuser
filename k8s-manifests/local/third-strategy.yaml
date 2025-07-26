@@ -1,0 +1,13 @@
+apiVersion: trading.io/v1
+kind: TradingStrategy
+metadata:
+  name: third-strategy
+  namespace: freqtrade-system
+spec:
+  name: "third-strategy"
+  strategy_class: "ThirdStrategy"
+  image: "freqtradeorg/freqtrade:stable"
+  port: 8082  # API only port
+  resources:
+    cpu: "2000m"  # 2 vCPU
+    memory: "2Gi" # 2GB RAM 

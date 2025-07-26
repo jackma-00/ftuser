@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trading-operator
+  namespace: freqtrade-system
+  labels:
+    app: trading-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trading-operator
+  template:
+    metadata:
+      labels:
+        app: trading-operator
+    spec:
+      serviceAccountName: trading-operator
+      containers:
+      - name: operator
+        image: trading-operator:local
+        imagePullPolicy: Never  # For local development
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        env:
+        - name: RUST_LOG
+          value: "info"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: trading-operator
+  namespace: freqtrade-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: trading-operator
+rules:
+- apiGroups: [""]
+  resources: ["services", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["trading.io"]
+  resources: ["tradingstrategies"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["trading.io"]
+  resources: ["tradingstrategies/status"]
+  verbs: ["get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: trading-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: trading-operator
+subjects:
+- kind: ServiceAccount
+  name: trading-operator
+  namespace: freqtrade-system 

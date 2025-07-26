@@ -1,0 +1,13 @@
+apiVersion: trading.io/v1
+kind: TradingStrategy
+metadata:
+  name: second-strategy
+  namespace: freqtrade-system
+spec:
+  name: "second-strategy"
+  strategy_class: "SecondStrategy"
+  image: "freqtradeorg/freqtrade:stable"
+  port: 8081  # API only port
+  resources:
+    cpu: "2000m"  # 2 vCPU
+    memory: "2Gi" # 2GB RAM 
