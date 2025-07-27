@@ -1,18 +1,17 @@
 ---
 services:
-  # Strategy 1
   freqtrade-first:
     image: freqtradeorg/freqtrade:stable
     restart: unless-stopped
     container_name: freqtrade-first
     volumes:
-      - "./user_data:/freqtrade/user_data"
+      - "/opt/freqtrade/user_data:/freqtrade/user_data"
     ports:
-      - "127.0.0.1:8080:8080"  # Main FreqUI - shows all strategies
+      - "8080:8080"  # Remove localhost binding for AWS
     command: >
       trade
       --logfile /freqtrade/user_data/logs/FirstStrategy/freqtrade.log
       --db-url sqlite:////freqtrade/user_data/logs/FirstStrategy/trades.sqlite
       --config /freqtrade/user_data/strategies/FirstStrategy/config_dryrun.json
       --strategy FirstStrategy
-      --strategy-path /freqtrade/user_data/strategies/FirstStrategy
+      --strategy-path /freqtrade/user_data/strategies/FirstStrategy 

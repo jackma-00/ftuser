@@ -174,3 +174,6 @@ config_*.json
 .env.development
 .env.test
 .env.production 
+
+# AWS
+AWSCLIV2.pkg
